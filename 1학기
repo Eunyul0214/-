@@ -1,0 +1,78 @@
+import random
+
+# coop = True, defect = False
+
+lastcounterpart = None
+contry1 = None
+contry2 = None
+
+contries = ['PlayerA', 'PlayerB', 'PlayerC', 'PlayerD']
+
+matrix = {(True, True): (10, 10), (True, False): (-10, 30), (False, False): (-10, -10), (False, True): (30, -10)}
+
+class Player:
+    def __init__(self):
+        self.lastchoice = None
+
+class PlayerA(Player):
+    def choose(self,counterpart, turn):
+        self.lastchoice = True
+        return True
+    
+class PlayerB(Player):
+    def choose(self, counterpart, turn):
+        self.lastchoice = False
+        return False
+
+class PlayerC(Player):
+    def choose(self,counterpart, turn):
+        if turn%2 == 0:
+            self.lastchoice = True
+            return True
+        else :
+            self.lastchoice = False
+            return False
+        
+class PlayerD(Player):
+    def choose(self,counterpart, turn):
+        if counterpart.lastchoice == None:
+            self.lastchoice = True
+            return True
+        else:
+            self.lastchoice = counterpart.lastchoice
+            return counterpart.lastchoice
+           
+class Game:
+    def __init__(self, player1, player2, player3, player4):
+        self.player1 = player1
+        self.player2 = player2
+        self.player3 = player3
+        self.player4 = player4
+        self.turn = 0
+
+    def start(self):
+        global turn
+        while True:
+            players = [ self.player1, self.player2, self.player3, self.player4]
+            getchoice1 = int(input('첫번째 국가를 선택하세요'))
+            getchoice2 = int(input('두번째 국가를 선택하세요'))
+            total1=0
+            total2=0
+            for i in range(10):
+                country1 = players[getchoice1 - 1 ]
+                country2 = players[getchoice2 - 1 ]
+                p1 = country1.choose(country2,self.turn)
+                p2 = country2.choose(country1,self.turn)
+                total1+=p1
+                total2+=p2
+                print(matrix[(p1, p2)])
+                self.turn += 1
+            print(total1, total2)
+
+player1 = PlayerA()
+player2 = PlayerB()
+player3 = PlayerC()
+player4 = PlayerD()
+
+game = Game(player1, player2, player3, player4)
+game.start()
